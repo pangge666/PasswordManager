@@ -27,8 +27,9 @@ def menu():
 
 
 # 将新生成的密码以字典类型保存到密码列表里
-def pwd_write(pwd_name, pwd):
+def pwd_write(pwd_obj, pwd_name, pwd):
     pwd_dict = dict()
+    pwd_dict['object'] = pwd_obj
     pwd_dict['name'] = pwd_name
     pwd_dict['password'] = pwd
     pwd_list.append(pwd_dict)
@@ -39,14 +40,16 @@ def pwd_write(pwd_name, pwd):
 # 生成新的密码
 def pass_word_new():
     while True:
-        pwd_name = input("请输入需要生成的密码服务于：")
+        pwd_obj = input("请输入需要生成的密码服务于：")
         # 确保输入了是哪儿的密码
-        if not pwd_name:
+        if not pwd_obj:
             print('一定要确认这是哪儿的密码。')
             continue
         break
 
-    #生成密码的位数大于12
+    # 输入用户名
+    pwd_name = input("请输入用户名：")
+    # 生成密码的位数大于2
     while True:
         # 确保一定要设定密码长度，并且长度大于2位。
         len_pw = input("请确定需要生成新密码的位数：")
@@ -66,7 +69,7 @@ def pass_word_new():
             pyperclip.copy(pwd)
             break
 
-    pwd_write(pwd_name, pwd)
+    pwd_write(pwd_obj, pwd_name, pwd)
 
 
 def pass_word_old():
@@ -81,13 +84,13 @@ def show_pwd():
     print('=' * 50)
     for index, pwd_dict in enumerate(pwd_list):
         index += 1
-        print('序号:{},{}，密码：{}'.format(index, pwd_dict['name'], pwd_dict['password']))
+        print('序号:{},{}，用户名{}，密码：{}'.format(index, pwd_dict['object'], pwd_dict['name'], pwd_dict['password']))
     print('=' * 50)
+
+
 # 保存密码信息到文件。
-
-
 def save_pwd():
-    file = open(r'C:\Program Files\system.sys','w',encoding='utf-8')
+    file = open(r"D:\360yun\pangge's\system.db", 'w', encoding='utf-8')
     result = str(pwd_list)
     file.write(result)
     file.close()
@@ -95,8 +98,8 @@ def save_pwd():
 
 # 读取保存在文件中的信息
 def load_pwd():
-    if os.path.exists(r'C:\Program Files\system.sys'):
-        file = open(r'C:\Program Files\system.sys','r',encoding='utf-8')
+    if os.path.exists(r"D:\360yun\pangge's\system.db"):
+        file = open(r"D:\360yun\pangge's\system.db", 'r', encoding='utf-8')
         pl = file.read()
         new_list = eval(pl)
         pwd_list.extend(new_list)
@@ -105,6 +108,7 @@ def load_pwd():
 
 # 将要复制的密码拷贝到剪贴板
 def pwd_copy():
+    show_pwd()
     i = int(input('请选择要复制的密码：'))
     if 0 < i <= len(pwd_list):
         pwd_dict = pwd_list[i - 1]
@@ -112,6 +116,7 @@ def pwd_copy():
         pwd = pwd_dict['password']
         pyperclip.copy(pwd)
         print('已拷贝到剪贴板')
+
 
 # 修改已保存的密码
 def pwd_mod():
@@ -123,7 +128,7 @@ def pwd_mod():
         pwd_new = input('请输入新的密码：')
         pwd_dict['password'] = pwd_new
         print('序号{}，{}的密码已修改为{}。'.format(i,
-                                         pwd_dict['name'],
+                                         pwd_dict['object'],
                                          pwd_dict['password']))
 
 
@@ -135,11 +140,11 @@ def pwd_del():
     if 0 < i <= len(pwd_list):
         # 提示是否删除该密码
         pwd_dict = pwd_list[index]
-        print('是否删除{}的密码？'.format(pwd_dict['name']))
+        print('是否删除{}的密码？'.format(pwd_dict['object']))
         n = input("按'y'删除：")
         if n == 'y':
             pwd_del = pwd_list.pop(index)
-            print('已删除{}的密码。'.format(pwd_del['name']))
+            print('已删除{}的密码。'.format(pwd_del['object']))
 
     show_pwd()
 
@@ -173,8 +178,3 @@ def start():
 
 if __name__ == "__main__":
     start()
-
-
-
-
-
